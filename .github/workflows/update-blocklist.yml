@@ -1,0 +1,31 @@
+name: Update blocklist
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Regenerate the blocklist
+        run: node update-blocklist.js
+      - name: Open a pull request if the list changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: update-blocklist
+          add-paths: default-blocklist.json
+          commit-message: Update built-in blocklist
+          title: Update built-in blocklist
+          body: |
+            Regenerated `default-blocklist.json` from the Huge AI Blocklist (CC0-1.0).
+            Review the added and removed domains before merging.
