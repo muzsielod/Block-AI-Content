@@ -5,6 +5,7 @@
     extensionApi,
     loadSettings,
     normalizeDomains,
+    createDomainMatcher,
     loadDefaultBlocklist,
     createFeatureBlocker,
     createResultFilter,
@@ -13,6 +14,10 @@
   async function loadRules() {
     const response = await fetch(extensionApi.runtime.getURL("rules.json"));
     return response.json();
+  }
+
+  function isPausedOnSite(settings, hostname) {
+    return createDomainMatcher(normalizeDomains(settings.pausedSites))(hostname);
   }
 
   async function collectBlockedDomains(settings) {
@@ -28,9 +33,10 @@
       blockers.push(createFeatureBlocker({ rules, hostname }));
     }
     if (settings.filterResults) {
-      blockers.push(createResultFilter({ rules, hostname, blockedDomains }));
+      const allowedDomains = normalizeDomains(settings.allowedDomains);
+      blockers.push(createResultFilter({ rules, hostname, blockedDomains, allowedDomains }));
     }
-    return blockers;
+    return blockers.filter((blocker) => blocker.isApplicable);
   }
 
   function runOncePerFrame(task) {
@@ -53,12 +59,16 @@
   }
 
   try {
-    const [settings, rules] = await Promise.all([loadSettings(), loadRules()]);
-    const blockedDomains = await collectBlockedDomains(settings);
     const hostname = location.hostname;
-    const blockers = createBlockers({ settings, rules, hostname, blockedDomains });
-    const applyBlockers = () => blockers.forEach((blocker) => blocker.run());
+    const settings = await loadSettings();
+    if (!settings.enabled || isPausedOnSite(settings, hostname)) return;
 
+    const rules = await loadRules();
+    const blockedDomains = await collectBlockedDomains(settings);
+    const blockers = createBlockers({ settings, rules, hostname, blockedDomains });
+    if (blockers.length === 0) return; // nothing to do here, so do not watch the page
+
+    const applyBlockers = () => blockers.forEach((blocker) => blocker.run());
     applyBlockers();
     watchForPageChanges(runOncePerFrame(applyBlockers));
   } catch (error) {

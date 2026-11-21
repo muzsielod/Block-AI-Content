@@ -28,3 +28,8 @@ test("hostnameContainsAny finds a fragment in the hostname", () => {
   assert.ok(hostnameContainsAny("www.google.ro", ["google."]));
   assert.ok(!hostnameContainsAny("www.bing.com", ["google."]));
 });
+
+test("parseDomainList accepts uBlacklist whole-domain patterns and skips comments", () => {
+  const result = parseDomainList("# comment\n*://*.example.com/*\n*://*.apple.com/apple-intelligence/*\n*.foo.org");
+  assert.deepStrictEqual(result, ["example.com", "foo.org"]);
+});

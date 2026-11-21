@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "AI Blocker",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Hide AI features and filter unwanted sites from search results, like an ad blocker but for AI.",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "content_scripts": [
     {
@@ -16,6 +17,7 @@
         "domains.js",
         "blocklist.js",
         "hiding.js",
+        "notice.js",
         "feature-blocker.js",
         "result-filter.js",
         "content.js"

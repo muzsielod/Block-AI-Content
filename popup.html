@@ -3,23 +3,36 @@
 <head>
 <meta charset="utf-8">
 <style>
-  body { font: 14px system-ui, sans-serif; width: 300px; padding: 12px; }
+  body { font: 14px system-ui, sans-serif; width: 310px; padding: 12px; }
   label { display: block; margin: 6px 0; }
-  textarea { width: 100%; height: 110px; box-sizing: border-box; }
+  textarea { width: 100%; height: 80px; box-sizing: border-box; }
   small { color: #666; }
   button { margin-top: 8px; }
+  details { margin-top: 10px; }
 </style>
 </head>
 <body>
   <h3>AI Blocker</h3>
   <label><input type="checkbox" id="enabled"> <b>Enabled</b></label>
-  <label><input type="checkbox" id="hideFeatures"> Hide AI features (e.g. AI Overviews)</label>
+  <label><input type="checkbox" id="pauseHere"> Pause on this site <small id="siteName"></small></label>
+  <label><input type="checkbox" id="hideFeatures"> Hide AI features (e.g. AI Mode, AI Overviews)</label>
   <label><input type="checkbox" id="filterResults"> Filter blocked sites from search results</label>
   <label><input type="checkbox" id="useDefaultBlocklist"> Use built-in blocklist <small>(<span id="defaultCount">…</span> sites)</small></label>
   <label>Your own blocked domains <small>(one per line)</small>
     <textarea id="blockedDomains" placeholder="example.com"></textarea>
   </label>
+  <label>Always allow these domains <small>(overrides any blocklist)</small>
+    <textarea id="allowedDomains" placeholder="example.org"></textarea>
+  </label>
   <button id="save">Save</button> <small id="status"></small>
+
+  <details>
+    <summary>Backup</summary>
+    <textarea id="backup" placeholder="Settings as JSON"></textarea>
+    <button id="export">Export</button>
+    <button id="import">Import</button>
+  </details>
+
   <script src="settings.js"></script>
   <script src="domains.js"></script>
   <script src="blocklist.js"></script>

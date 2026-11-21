@@ -6,10 +6,21 @@
     "AI Overviews",
     "AI Mode"
   ],
-  "headingHosts": ["google."],
-  "selectors": {
-    "example.com": [".ai-widget-example"]
-  },
+  "headingHosts": [
+    "google."
+  ],
+  "selectors": {},
   "resultContainers": "div.g, div.MjjYud, li.b_algo, article[data-testid='result'], li[data-layout='organic'], .result",
-  "searchHosts": ["google.", "bing.com", "duckduckgo.com", "search.brave.com"]
+  "searchHosts": [
+    "google.",
+    "bing.com",
+    "duckduckgo.com",
+    "search.brave.com"
+  ],
+  "controlHosts": [
+    "google."
+  ],
+  "controlLabels": [
+    "AI Mode"
+  ]
 }

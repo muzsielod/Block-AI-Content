@@ -1,11 +1,21 @@
 (function (root) {
   "use strict";
 
+  const UBLACKLIST_WHOLE_DOMAIN = /^\*:\/\/\*\.([^/]+)\/\*$/;
+
+  // Accepts "example.com", pasted URLs, and uBlacklist whole-domain patterns.
+  // uBlacklist patterns limited to a path are dropped, because blocking the
+  // whole domain would hide far more than the pattern intended.
   function normalizeDomain(entry) {
-    return entry
-      .trim()
-      .toLowerCase()
+    const text = entry.trim().toLowerCase();
+    if (text.startsWith("#")) return "";
+    if (text.startsWith("*://")) {
+      const match = text.match(UBLACKLIST_WHOLE_DOMAIN);
+      return match ? match[1] : "";
+    }
+    return text
       .replace(/^https?:\/\//, "")
+      .replace(/^\*\./, "")
       .replace(/\/.*$/, "");
   }
 
