@@ -5,6 +5,7 @@
     extensionApi,
     loadSettings,
     normalizeDomains,
+    loadDefaultBlocklist,
     createFeatureBlocker,
     createResultFilter,
   } = globalThis.AIBlocker;
@@ -14,13 +15,19 @@
     return response.json();
   }
 
-  function createBlockers({ settings, rules, hostname }) {
+  async function collectBlockedDomains(settings) {
+    const ownDomains = normalizeDomains(settings.blockedDomains);
+    if (!settings.useDefaultBlocklist) return ownDomains;
+    const defaultBlocklist = await loadDefaultBlocklist();
+    return [...defaultBlocklist.domains, ...ownDomains];
+  }
+
+  function createBlockers({ settings, rules, hostname, blockedDomains }) {
     const blockers = [];
     if (settings.hideFeatures) {
       blockers.push(createFeatureBlocker({ rules, hostname }));
     }
     if (settings.filterResults) {
-      const blockedDomains = normalizeDomains(settings.blockedDomains);
       blockers.push(createResultFilter({ rules, hostname, blockedDomains }));
     }
     return blockers;
@@ -47,7 +54,9 @@
 
   try {
     const [settings, rules] = await Promise.all([loadSettings(), loadRules()]);
-    const blockers = createBlockers({ settings, rules, hostname: location.hostname });
+    const blockedDomains = await collectBlockedDomains(settings);
+    const hostname = location.hostname;
+    const blockers = createBlockers({ settings, rules, hostname, blockedDomains });
     const applyBlockers = () => blockers.forEach((blocker) => blocker.run());
 
     applyBlockers();

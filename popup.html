@@ -14,12 +14,14 @@
   <h3>AI Blocker</h3>
   <label><input type="checkbox" id="hideFeatures"> Hide AI features (e.g. AI Overviews)</label>
   <label><input type="checkbox" id="filterResults"> Filter blocked sites from search results</label>
-  <label>Blocked domains <small>(one per line)</small>
+  <label><input type="checkbox" id="useDefaultBlocklist"> Use built-in blocklist <small>(<span id="defaultCount">…</span> sites)</small></label>
+  <label>Your own blocked domains <small>(one per line)</small>
     <textarea id="blockedDomains" placeholder="example.com"></textarea>
   </label>
   <button id="save">Save</button> <small id="status"></small>
   <script src="settings.js"></script>
   <script src="domains.js"></script>
+  <script src="blocklist.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

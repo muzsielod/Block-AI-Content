@@ -21,13 +21,18 @@
     return domains.join("\n");
   }
 
-  function isSameOrSubdomain(hostname, domain) {
-    return hostname === domain || hostname.endsWith("." + domain);
+  // "news.example.com" yields "news.example.com" and "example.com", never the bare "com".
+  function hostnameAndParentDomains(hostname) {
+    const labels = hostname.toLowerCase().split(".");
+    const candidateCount = Math.max(labels.length - 1, 1);
+    return Array.from({ length: candidateCount }, (_, index) => labels.slice(index).join("."));
   }
 
-  function isDomainBlocked(hostname, blockedDomains) {
-    const lowerCaseHostname = hostname.toLowerCase();
-    return blockedDomains.some((domain) => isSameOrSubdomain(lowerCaseHostname, domain));
+  // Set lookup keeps matching fast even with a list of over a thousand domains.
+  function createDomainMatcher(domains) {
+    const blockedDomains = new Set(domains);
+    return (hostname) =>
+      hostnameAndParentDomains(hostname).some((domain) => blockedDomains.has(domain));
   }
 
   function hostnameContainsAny(hostname, fragments) {
@@ -38,7 +43,7 @@
     normalizeDomains,
     parseDomainList,
     formatDomainList,
-    isDomainBlocked,
+    createDomainMatcher,
     hostnameContainsAny,
   });
 })(globalThis);

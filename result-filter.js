@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  const { hideElement, hostnameContainsAny, isDomainBlocked } = root.AIBlocker;
+  const { hideElement, hostnameContainsAny, createDomainMatcher } = root.AIBlocker;
 
   const EXTERNAL_LINK_SELECTOR = "a[href^='http']";
 
@@ -16,10 +16,11 @@
   function createResultFilter({ rules, hostname, blockedDomains }) {
     const isSearchPage = hostnameContainsAny(hostname, rules.searchHosts ?? []);
     const isActive = isSearchPage && blockedDomains.length > 0;
+    const isBlocked = createDomainMatcher(blockedDomains);
 
     function hideResultIfBlocked(link) {
       const linkHostname = hostnameOfLink(link);
-      if (linkHostname && isDomainBlocked(linkHostname, blockedDomains)) {
+      if (linkHostname && isBlocked(linkHostname)) {
         hideElement(link.closest(rules.resultContainers));
       }
     }

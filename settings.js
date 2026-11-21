@@ -6,6 +6,7 @@
   const DEFAULT_SETTINGS = Object.freeze({
     hideFeatures: true,
     filterResults: true,
+    useDefaultBlocklist: true,
     blockedDomains: [],
   });
 

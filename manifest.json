@@ -14,6 +14,7 @@
       "js": [
         "settings.js",
         "domains.js",
+        "blocklist.js",
         "hiding.js",
         "feature-blocker.js",
         "result-filter.js",
@@ -25,7 +26,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "rules.json"
+        "rules.json",
+        "default-blocklist.json"
       ],
       "matches": [
         "<all_urls>"
