@@ -4,6 +4,7 @@
   const extensionApi = typeof browser !== "undefined" ? browser : chrome;
 
   const DEFAULT_SETTINGS = Object.freeze({
+    enabled: true,
     hideFeatures: true,
     filterResults: true,
     useDefaultBlocklist: true,

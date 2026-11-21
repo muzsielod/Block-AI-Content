@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Blocker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Hide AI features and filter unwanted sites from search results, like an ad blocker but for AI.",
   "permissions": [
     "storage"
@@ -36,11 +36,30 @@
   ],
   "action": {
     "default_title": "AI Blocker",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon-enabled-16.png",
+      "32": "icon-enabled-32.png",
+      "48": "icon-enabled-48.png",
+      "128": "icon-enabled-128.png"
+    }
   },
   "browser_specific_settings": {
     "gecko": {
       "id": "ai-blocker@example.invalid"
     }
+  },
+  "icons": {
+    "16": "icon-enabled-16.png",
+    "32": "icon-enabled-32.png",
+    "48": "icon-enabled-48.png",
+    "128": "icon-enabled-128.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": [
+      "settings.js",
+      "background.js"
+    ]
   }
 }

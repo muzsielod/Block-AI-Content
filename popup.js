@@ -1,9 +1,16 @@
 (function () {
   "use strict";
 
-  const { loadSettings, saveSettings, parseDomainList, formatDomainList, loadDefaultBlocklist } =
-    globalThis.AIBlocker;
+  const {
+    extensionApi,
+    loadSettings,
+    saveSettings,
+    parseDomainList,
+    formatDomainList,
+    loadDefaultBlocklist,
+  } = globalThis.AIBlocker;
 
+  const enabledInput = document.getElementById("enabled");
   const hideFeaturesInput = document.getElementById("hideFeatures");
   const filterResultsInput = document.getElementById("filterResults");
   const useDefaultBlocklistInput = document.getElementById("useDefaultBlocklist");
@@ -13,6 +20,7 @@
   const statusLabel = document.getElementById("status");
 
   function showSettings(settings) {
+    enabledInput.checked = settings.enabled;
     hideFeaturesInput.checked = settings.hideFeatures;
     filterResultsInput.checked = settings.filterResults;
     useDefaultBlocklistInput.checked = settings.useDefaultBlocklist;
@@ -25,6 +33,7 @@
 
   function readSettingsFromForm() {
     return {
+      enabled: enabledInput.checked,
       hideFeatures: hideFeaturesInput.checked,
       filterResults: filterResultsInput.checked,
       useDefaultBlocklist: useDefaultBlocklistInput.checked,
@@ -32,9 +41,15 @@
     };
   }
 
+  async function reloadActiveTab() {
+    const [activeTab] = await extensionApi.tabs.query({ active: true, currentWindow: true });
+    if (activeTab) await extensionApi.tabs.reload(activeTab.id);
+  }
+
   async function handleSave() {
     await saveSettings(readSettingsFromForm());
-    statusLabel.textContent = "Saved. Reload the page.";
+    await reloadActiveTab();
+    statusLabel.textContent = "Saved and reloaded.";
   }
 
   saveButton.addEventListener("click", handleSave);
